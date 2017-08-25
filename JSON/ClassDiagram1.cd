@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="JSON.Json" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAIAAABAQAAE=</HashCode>
+      <FileName>JSON.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="JSON.IJsonAble">
+    <Position X="3.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IJSONable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="JSON.JSONChildrenType">
+    <Position X="6.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAABAIAAQAIBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>JSONChildrenType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="JSON.JSONDecodeStatus">
+    <Position X="1.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIABAAAAAAAAAABAIAAAAIBAAAAAAAIAAAAAA=</HashCode>
+      <FileName>JSONDecodeStatus.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
