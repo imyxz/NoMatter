@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="MatterClass.MatterBasic" Collapsed="true">
-    <Position X="3.5" Y="0.5" Width="1.5" />
+    <Position X="1.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAIAAAAAgCABAAAAAgAAAAACAAAEAAAAAAAAABAA=</HashCode>
       <FileName>MatterBasic.cs</FileName>
@@ -11,14 +11,21 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="MatterClass.MatterOneOff">
-    <Position X="3.5" Y="2.5" Width="1.5" />
+    <Position X="0.5" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAgAIAAAAAACABAAAAAgAAAAACAAAEAAAAAAAAABAA=</HashCode>
       <FileName>MatterOneOff.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="MatterClass.MatterPeriodicity">
+    <Position X="2.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatterPeriodicity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Enum Name="MatterClass.MatterType">
-    <Position X="0.5" Y="1.25" Width="1.5" />
+    <Position X="1.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAA=</HashCode>
       <FileName>MatterType.cs</FileName>

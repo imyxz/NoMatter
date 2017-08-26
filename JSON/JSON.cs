@@ -3,14 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.Collections;
 
 namespace JSON
 {
-    public class Json
+    public class Json:IDictionary<string,Json>
     {
         private Dictionary<string, Json> childrens = new Dictionary<string, Json>();
         private string single_value;
         private JSONChildrenType childrenType = new JSONChildrenType();
+
+        public ICollection<string> Keys => ((IDictionary<string, Json>)childrens).Keys;
+
+        public ICollection<Json> Values => ((IDictionary<string, Json>)childrens).Values;
+
+        public int Count => ((IDictionary<string, Json>)childrens).Count;
+
+        public bool IsReadOnly => ((IDictionary<string, Json>)childrens).IsReadOnly;
+
+
+        #region Json Constructor
         public Json()
         {
             childrenType = JSONChildrenType.ARRAY;
@@ -40,6 +53,9 @@ namespace JSON
             single_value = value.ToString();
             childrenType = JSONChildrenType.STRING;
         }
+        #endregion
+
+#region Json [] operator
         public Json this[string index]
         {
             get
@@ -69,13 +85,9 @@ namespace JSON
                 this[index.ToString()] = value;
             }
         }
+#endregion
 
-        public T ConvertTo<T>() where T : IJsonAble,new()
-        {
-            T ret = new T();
-            ret.fromJson(this);
-            return ret;
-        }
+        #region Json Importor for Dictionary And List
         public static Json Import<T1,T2>(IDictionary<T1,T2> dic)
         {
             Json ret = new Json();
@@ -191,6 +203,8 @@ namespace JSON
             ret.childrenType = JSONChildrenType.ARRAY;
             return ret;
         }
+        #endregion
+#region Json Convertor
         public int ToInt()
         {
             int ret = 0;
@@ -209,9 +223,81 @@ namespace JSON
             bool.TryParse(single_value, out ret);
             return ret;
         }
-        public static Json ConvertFrom<T>(T obj) where T: IJsonAble
+        public static Json ConvertFrom(object obj) 
         {
-            return obj.toJson();
+            return Json.ConvertFrom(obj.GetType(), obj);
+        }
+        public static Json ConvertFrom<T>(T obj)//用于多态下的转换
+        {
+            return Json.ConvertFrom(typeof(T), obj);
+        }
+
+        private static Json ConvertFrom(Type type,object obj)
+        {
+            if (obj is IJsonAble ijsonable)
+                return ijsonable.toJson();
+            else if(type.Namespace!=null&& !isOverideFrom("ToString",type,typeof(object)))//如果自身重写了ToString方法，则认为可以直接取它的ToString值，避免死循环 如果namespace是null，则为匿名类型
+            {
+                return new Json(obj.ToString());
+            }
+            else
+            {
+                Json ret = new Json();
+                Type obj_type = type;
+                foreach (MemberInfo member in obj_type.GetMembers(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    if (member.MemberType == MemberTypes.Field)//public 属性
+                    {
+                        object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
+            BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Instance | BindingFlags.GetField
+            , null, obj, null);//获取属性值
+                        
+                        if (value != null)
+                        {
+                            ret[member.Name] = Json.ConvertFrom(((FieldInfo)member).FieldType, value);
+                        }
+                        else
+                        {
+                            //null
+                        }
+                    }
+                    else if(member.MemberType == MemberTypes.Property)
+                    {
+                        object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
+            BindingFlags.Public | BindingFlags.NonPublic |
+            BindingFlags.Instance | BindingFlags.GetProperty
+            , null, obj, null);//获取属性值
+
+                        if (value != null)
+                        {
+                            ret[member.Name] = Json.ConvertFrom(((PropertyInfo)member).PropertyType, value);
+                        }
+                        else
+                        {
+                            //null
+                        }
+                    }
+                }
+                return ret;
+
+            }
+        }
+        private static bool isOverideFrom(string methodName,Type target,Type from)
+        {
+            bool isExist = false;
+            foreach (MethodInfo info in target.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if(info.Name==methodName)
+                {
+                    isExist = true;
+                    if (info.DeclaringType != from)
+                        return false;
+                }
+                
+            }
+            return isExist;
+            
         }
         public static implicit operator Json(string a)
         {
@@ -245,6 +331,14 @@ namespace JSON
         {
             return a.ToBool();
         }
+        public T ConvertTo<T>() where T : IJsonAble, new()
+        {
+            T ret = new T();
+            ret.fromJson(this);
+            return ret;
+        }
+        #endregion
+#region Json Encoder
         public string Encode()
         {
             if (childrenType == JSONChildrenType.STRING)
@@ -311,6 +405,8 @@ namespace JSON
                
             
         }
+        #endregion
+        #region Json Decoder        
         public static Json Decode(string json)
         {
             return _Decode(ref json);
@@ -397,6 +493,24 @@ namespace JSON
                     if (!_DecodeCheckNextCommo(ref json, '}', end_pos+1, out end_pos)) throw new Exception("json解析错误");
                     flag = false;
                 }
+                else if (json[end_pos]=='t' || json[end_pos] == 'T' || json[end_pos] == 'f' || json[end_pos] == 'F')
+                {
+                    if (!flag) throw new Exception("json解析错误");
+                    bool value = false;
+                    if (!_DecodeGetBool(ref json, end_pos, out end_pos, out value)) throw new Exception("json解析错误");
+                    ret[key] = value;
+                    if (!_DecodeCheckNextCommo(ref json, '}', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
+                    flag = false;
+                }
+                else if (json[end_pos] == 'n' || json[end_pos] == 'N')
+                {
+                    if (!flag) throw new Exception("json解析错误");
+                    string value = "";
+                    if (!_DecodeGetNull(ref json, end_pos, out end_pos, out value)) throw new Exception("json解析错误");
+                    ret[key] = value;
+                    if (!_DecodeCheckNextCommo(ref json, '}', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
+                    flag = false;
+                } 
                 else if (json[end_pos] == '}')
                 {
                     if (flag) throw new Exception("json解析错误");
@@ -447,6 +561,20 @@ namespace JSON
                     if (!_DecodeCheckNextCommo(ref json, ']', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
 
                 }
+                else if (json[end_pos] == 't' || json[end_pos] == 'T' || json[end_pos] == 'f' || json[end_pos] == 'F')
+                {
+                    bool value = false;
+                    if (!_DecodeGetBool(ref json, end_pos, out end_pos, out value)) throw new Exception("json解析错误");
+                    ret[cnt++] = value;
+                    if (!_DecodeCheckNextCommo(ref json, ']', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
+                }
+                else if (json[end_pos] == 'n' || json[end_pos] == 'N')
+                {
+                    string value = "";
+                    if (!_DecodeGetNull(ref json, end_pos, out end_pos, out value)) throw new Exception("json解析错误");
+                    ret[cnt++] = value;
+                    if (!_DecodeCheckNextCommo(ref json, ']', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
+                }
                 else if (json[end_pos] == ']')
                 {
                     return ret;
@@ -474,6 +602,39 @@ namespace JSON
                     if (end_pos < json.Length - 1)
                     {
                         end_pos++;
+                        switch(json[end_pos])
+                        {
+                            case 't':
+                                str += '\t';
+                                end_pos++;
+                                continue;
+                            case 'n':
+                                str += '\n';
+                                end_pos++;
+                                continue;
+                            case 'u':
+                                if (json.Length - end_pos >= 4)
+                                {
+                                    string hex = json.Substring(end_pos + 1, 4);
+                                    bool isSuccess = true;
+                                    try
+                                    {
+                                        char tmp = (char)int.Parse(hex, System.Globalization.NumberStyles.HexNumber);
+                                        str += tmp;
+                                    }
+                                    catch
+                                    {
+                                        isSuccess = false;
+                                    }
+                                    if (!isSuccess) return false;
+
+                                    end_pos += 5;
+                                    continue;
+
+                                }
+                                else
+                                    return false;
+                        }
                     }
                 }
                 else if (json[end_pos] == '\"')
@@ -529,7 +690,38 @@ namespace JSON
         }
         private static bool _DecodeGetBool(ref string json, int start_pos, out int end_pos, out bool boolean)
         {
-
+            end_pos = start_pos;
+            boolean = false;
+            if (json.Length - end_pos < 5)//一定至少5个
+                return false;
+            if(json.Substring(end_pos,4).ToLower()=="true")
+            {
+                boolean = true;
+                end_pos += 3;
+                return true;
+            }
+            else
+            if(json.Substring(end_pos, 5).ToLower() == "false")
+            {
+                boolean = false;
+                end_pos += 4;
+                return true;
+            }
+            return false;
+        }
+        private static bool _DecodeGetNull(ref string json, int start_pos, out int end_pos, out string str)
+        {
+            end_pos = start_pos;
+            str = "";
+            if (json.Length - end_pos < 5)//一定至少5个
+                return false;
+            if (json.Substring(end_pos, 4).ToLower() == "null")
+            {
+                str = "null";
+                end_pos += 3;
+                return true;
+            }
+            return false;
         }
 
         private static bool _DecodeCheckNextCommo(ref string json,char valid_end, int start_pos, out int end_pos)
@@ -549,6 +741,63 @@ namespace JSON
             }
             return false;
         }
+        #endregion
+#region Implement for IDictionary
+        public bool ContainsKey(string key)
+        {
+            return ((IDictionary<string, Json>)childrens).ContainsKey(key);
+        }
+
+        public void Add(string key, Json value)
+        {
+            ((IDictionary<string, Json>)childrens).Add(key, value);
+        }
+
+        public bool Remove(string key)
+        {
+            return ((IDictionary<string, Json>)childrens).Remove(key);
+        }
+
+        public bool TryGetValue(string key, out Json value)
+        {
+            return ((IDictionary<string, Json>)childrens).TryGetValue(key, out value);
+        }
+
+        public void Add(KeyValuePair<string, Json> item)
+        {
+            ((IDictionary<string, Json>)childrens).Add(item);
+        }
+
+        public void Clear()
+        {
+            ((IDictionary<string, Json>)childrens).Clear();
+        }
+
+        public bool Contains(KeyValuePair<string, Json> item)
+        {
+            return ((IDictionary<string, Json>)childrens).Contains(item);
+        }
+
+        public void CopyTo(KeyValuePair<string, Json>[] array, int arrayIndex)
+        {
+            ((IDictionary<string, Json>)childrens).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(KeyValuePair<string, Json> item)
+        {
+            return ((IDictionary<string, Json>)childrens).Remove(item);
+        }
+
+        public IEnumerator<KeyValuePair<string, Json>> GetEnumerator()
+        {
+            return ((IDictionary<string, Json>)childrens).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IDictionary<string, Json>)childrens).GetEnumerator();
+        }
 
     }
+#endregion
 }

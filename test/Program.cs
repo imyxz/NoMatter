@@ -11,7 +11,7 @@ namespace test
         static void Main(string[] args)
         {
             Json a=new Json();
-            a["status"] = true;
+            /*a["status"] = true;
             a["info"]["name"] = "董\"\\建华";
             a["info"]["old"] = 11;
             a["info"]["birth"] = 1988;
@@ -28,9 +28,45 @@ namespace test
             a["test"]["tse334t"] = Json.Import<string,int>(dictionary);
             string tmp = a.Encode();
             Console.WriteLine(tmp);
-            a = Json.Decode(tmp);
+            a = Json.Decode(tmp);*/
+            string json_string = "";
+            /*json_string = System.IO.File.ReadAllText(@"D:\test.txt");
+            a = Json.Decode(json_string);
+            a = Json.Decode(json_string);
+            a = Json.Decode(json_string);
+            a = Json.Decode(json_string);*/
+            test tester = new test();
+            a = Json.ConvertFrom(tester);
+            foreach(KeyValuePair<string,Json> pair in a)
+            {
+                Console.WriteLine(pair.Key + " " + pair.Value.Encode());
+            }
             Console.WriteLine(a.Encode());
             Console.ReadKey();
+        }
+    }
+    class test
+    {
+        public string a, b, c, d;
+        public test1 datetime = new test1();
+        private string ed;
+        public test()
+        {
+            a = "123";
+            b = "456";
+            c = "789";
+        }
+        public string xxx()
+        {
+            return "";
+        }
+    }
+    class test1
+    {
+        public DateTime a;
+        public test1()
+        {
+            a = new DateTime();
         }
     }
 }

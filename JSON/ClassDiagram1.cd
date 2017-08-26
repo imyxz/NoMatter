@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="JSON.Json" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="1.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAIAAABAQAAE=</HashCode>
+      <HashCode>CAIAoAAAAADEABQRKAAABgSEAhgAQiAEAJhgQBBQIAE=</HashCode>
       <FileName>JSON.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="JSON.IJsonAble">
-    <Position X="3.75" Y="2" Width="1.5" />
+    <Position X="3.75" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IJSONable.cs</FileName>
@@ -22,7 +23,7 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="JSON.JSONDecodeStatus">
-    <Position X="1.25" Y="3" Width="1.5" />
+    <Position X="4.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIABAAAAAAAAAABAIAAAAIBAAAAAAAIAAAAAA=</HashCode>
       <FileName>JSONDecodeStatus.cs</FileName>
