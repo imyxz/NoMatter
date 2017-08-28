@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JSON;
+using ServerLib;
 namespace test
 {
     class Program
@@ -34,7 +35,7 @@ namespace test
             a = Json.Decode(json_string);
             a = Json.Decode(json_string);
             a = Json.Decode(json_string);
-            a = Json.Decode(json_string);*/
+            a = Json.Decode(json_string);
             test tester = new test();
             a = Json.ConvertFrom(tester);
             foreach(KeyValuePair<string,Json> pair in a)
@@ -42,7 +43,13 @@ namespace test
                 Console.WriteLine(pair.Key + " " + pair.Value.Encode());
             }
             Console.WriteLine(a.Encode());
+            Console.ReadKey();*/
+            MatterServer server = new MatterServer();
+            server.Start("http://127.0.0.1:9090/");
             Console.ReadKey();
+
+
+
         }
     }
     class test
