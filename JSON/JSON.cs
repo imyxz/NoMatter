@@ -26,7 +26,7 @@ namespace JSON
         #region Json Constructor
         public Json()
         {
-            childrenType = JSONChildrenType.ARRAY;
+            childrenType = JSONChildrenType.NULL;
         }
         public Json(string value)
         {
@@ -205,22 +205,22 @@ namespace JSON
         }
         #endregion
 #region Json Convertor
-        public int ToInt()
+        public int ? ToInt()
         {
             int ret = 0;
-            int.TryParse(single_value, out ret);
+            if (!IsReadAble() || !int.TryParse(single_value, out ret)) return null;
             return ret;
         }
-        public double ToDouble()
+        public double ? ToDouble()
         {
             double ret = 0;
-            double.TryParse(single_value, out ret);
+            if (!IsReadAble() || !double.TryParse(single_value, out ret)) return null;
             return ret;
         }
-        public bool ToBool()
+        public bool ? ToBool()
         {
             bool ret = false;
-            bool.TryParse(single_value, out ret);
+            if (!IsReadAble() || !bool.TryParse(single_value, out ret)) return null;
             return ret;
         }
         public static Json ConvertFrom(object obj) 
@@ -276,6 +276,7 @@ namespace JSON
                         else
                         {
                             //null
+                            ret[member.Name] = new Json();
                         }
                     }
                 }
@@ -315,11 +316,11 @@ namespace JSON
         {
             return new Json(a);
         }
-        public static implicit operator int(Json a)
+        public static implicit operator int?(Json a)
         {
             return a.ToInt();
         }
-        public static implicit operator double(Json a)
+        public static implicit operator double?(Json a)
         {
             return a.ToDouble();
         }
@@ -327,7 +328,7 @@ namespace JSON
         {
             return a.single_value;
         }
-        public static implicit operator bool(Json a)
+        public static implicit operator bool?(Json a)
         {
             return a.ToBool();
         }
@@ -409,7 +410,16 @@ namespace JSON
         #region Json Decoder        
         public static Json Decode(string json)
         {
-            return _Decode(ref json);
+            Json ret;
+            try
+            {
+                ret= _Decode(ref json);
+            }
+            catch
+            {
+                return null;
+            }
+            return ret;
 
         }
         private static Json _Decode(ref string json)
@@ -742,6 +752,21 @@ namespace JSON
             return false;
         }
         #endregion
+        public bool IsReadAble()
+        {
+            switch(childrenType)
+            {
+                case JSONChildrenType.NULL:
+                    return false;
+                case JSONChildrenType.ARRAY:
+                    return false;
+                case JSONChildrenType.DICTIONARY:
+                    return false;
+                default:
+                    return true;
+            }
+
+        }
 #region Implement for IDictionary
         public bool ContainsKey(string key)
         {
@@ -800,4 +825,5 @@ namespace JSON
 
     }
 #endregion
+
 }

@@ -55,11 +55,14 @@ namespace ServerLib
                 context.Controller = controller;
                 context.Action = action;
                 context.Handler = Handlers[controller][action];
+                byte[] requestBuf = new byte[ListenerContext.Request.ContentLength64];
+                ListenerContext.Request.InputStream.Read(requestBuf, 0, (int)ListenerContext.Request.ContentLength64);
+                context.Request = Encoding.UTF8.GetString(requestBuf);
                 for (int index = 4; index < query.Length; index += 2)//填充Arguments
                 {
                     context.Arguments[query[index - 1]] = query[index];
                 }
-                context.Handler(context);
+                context.Handler(context);//调用方法
                 string responseStr = context.Response;
                 byte[] buf = Encoding.UTF8.GetBytes(responseStr);
                 ListenerContext.Response.ContentLength64 = buf.Length;

@@ -13,6 +13,7 @@ namespace ServerLib
         public string Controller;
         public string Action;
         public string Response = "";
+        public string Request = "";
         public Func<HttpServerContext, string> Handler;
         public void Write(string a)
         {

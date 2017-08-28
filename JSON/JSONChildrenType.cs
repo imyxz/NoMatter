@@ -12,6 +12,7 @@ namespace JSON
         DICTIONARY,
         INT,
         DOUBLE,
-        BOOLEAN
+        BOOLEAN,
+        NULL
     }
 }
