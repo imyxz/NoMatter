@@ -12,7 +12,7 @@ namespace HttpRequest
         private double timeout = 5;
         public string Get(string url)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("url");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(url));
             request.Method = "GET";
             request.Timeout = (int)timeout*1000;
             var response = request.GetResponse();
@@ -20,7 +20,7 @@ namespace HttpRequest
         }
         public string Post(string url,string content)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("url");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(url));
             request.Method = "POST";
             request.Timeout = (int)timeout * 1000;
             BuildReqStream(ref request, content);

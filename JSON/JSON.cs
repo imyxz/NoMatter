@@ -12,6 +12,7 @@ namespace JSON
     {
         private Dictionary<string, Json> childrens = new Dictionary<string, Json>();
         private string single_value;
+        private static int max_depth = 512;
         private JSONChildrenType childrenType = new JSONChildrenType();
 
         public ICollection<string> Keys => ((IDictionary<string, Json>)childrens).Keys;
@@ -225,16 +226,39 @@ namespace JSON
         }
         public static Json ConvertFrom(object obj) 
         {
-            return Json.ConvertFrom(obj.GetType(), obj);
+            return Json.ConvertFrom(obj.GetType(), obj, 0, null);
         }
+        
         public static Json ConvertFrom<T>(T obj)//用于多态下的转换
         {
-            return Json.ConvertFrom(typeof(T), obj);
+            return Json.ConvertFrom(typeof(T), obj, 0, null);
         }
-
-        private static Json ConvertFrom(Type type,object obj)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="Filter">用于过滤字段的函数，第一个参数为类名，第二个参数为属性名,若为非null则不调用IJsonable接口</param>
+        /// <returns></returns>
+        public static Json ConvertFrom(object obj, Func<string, string, bool> Filter)
         {
-            if (obj is IJsonAble ijsonable)
+            return Json.ConvertFrom(obj.GetType(), obj, 0, Filter);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="Filter">用于过滤字段的函数，第一个参数为类名，第二个参数为属性名,若为非null则不调用IJsonable接口</param>
+        /// <returns></returns>
+        public static Json ConvertFrom<T>(T obj, Func<string, string, bool> Filter)//用于多态下的转换
+        {
+            return Json.ConvertFrom(typeof(T), obj,0, Filter);
+        }
+        private static Json ConvertFrom(Type type,object obj,int depth,Func<string,string,bool> Filter)
+        {
+            if (depth > max_depth)
+                throw new Exception("递归层次超过阈值");
+            if (Filter==null && obj is IJsonAble ijsonable)
                 return ijsonable.toJson();
             else if(type.Namespace!=null&& !isOverideFrom("ToString",type,typeof(object)))//如果自身重写了ToString方法，则认为可以直接取它的ToString值，避免死循环 如果namespace是null，则为匿名类型
             {
@@ -246,39 +270,43 @@ namespace JSON
                 Type obj_type = type;
                 foreach (MemberInfo member in obj_type.GetMembers(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if (member.MemberType == MemberTypes.Field)//public 属性
+                    if((Filter != null && Filter(obj_type.Name, member.Name)))//过滤函数
                     {
-                        object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
-            BindingFlags.Public | BindingFlags.NonPublic |
-            BindingFlags.Instance | BindingFlags.GetField
-            , null, obj, null);//获取属性值
-                        
-                        if (value != null)
+                        if (member.MemberType == MemberTypes.Field)//public 属性
                         {
-                            ret[member.Name] = Json.ConvertFrom(((FieldInfo)member).FieldType, value);
-                        }
-                        else
-                        {
-                            //null
-                        }
-                    }
-                    else if(member.MemberType == MemberTypes.Property)
-                    {
-                        object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
-            BindingFlags.Public | BindingFlags.NonPublic |
-            BindingFlags.Instance | BindingFlags.GetProperty
-            , null, obj, null);//获取属性值
+                            object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
+                BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance | BindingFlags.GetField
+                , null, obj, null);//获取属性值
 
-                        if (value != null)
-                        {
-                            ret[member.Name] = Json.ConvertFrom(((PropertyInfo)member).PropertyType, value);
+                            if (value != null)
+                            {
+                                ret[member.Name] = Json.ConvertFrom(((FieldInfo)member).FieldType, value, depth+1, Filter);
+                            }
+                            else
+                            {
+                                //null
+                            }
                         }
-                        else
+                        else if (member.MemberType == MemberTypes.Property)
                         {
-                            //null
-                            ret[member.Name] = new Json();
+                            object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
+                BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance | BindingFlags.GetProperty
+                , null, obj, null);//获取属性值
+
+                            if (value != null)
+                            {
+                                ret[member.Name] = Json.ConvertFrom(((PropertyInfo)member).PropertyType, value, depth + 1, Filter);
+                            }
+                            else
+                            {
+                                //null
+                                ret[member.Name] = new Json();
+                            }
                         }
                     }
+                    
                 }
                 return ret;
 
@@ -326,6 +354,7 @@ namespace JSON
         }
         public static implicit operator string(Json a)
         {
+            if (!a.IsReadAble()) return null;
             return a.single_value;
         }
         public static implicit operator bool?(Json a)
@@ -345,44 +374,50 @@ namespace JSON
             if (childrenType == JSONChildrenType.STRING)
                 return "{" + Json.Filter(single_value,childrenType) + "}";
             else
-                return _Encode();
+                return _Encode(0);
         }
-        private string _Encode()
+        private string _Encode(int depth)
         {
-            if (childrenType == JSONChildrenType.ARRAY)
+            if (depth > max_depth)
+                throw new Exception("递归层次超过阈值");
+            string ret = "";
+            int cnt = 0;
+            switch (childrenType)
             {
-                string ret = "[";
-                int cnt = 0;
-                foreach (KeyValuePair<string, Json> pair in childrens)
-                {
-                    ret += pair.Value._Encode() + ",";
-                    cnt++;
-                }
-                if (cnt > 0)
-                {
-                    ret = ret.Substring(0, ret.Length - 1);
-                }
-                return ret + "]";
+                case JSONChildrenType.ARRAY:
+                     ret = "[";
+                     cnt = 0;
+                    foreach (KeyValuePair<string, Json> pair in childrens)
+                    {
+                        ret += pair.Value._Encode(depth + 1) + ",";
+                        cnt++;
+                    }
+                    if (cnt > 0)
+                    {
+                        ret = ret.Substring(0, ret.Length - 1);
+                    }
+                    return ret + "]";
+                case JSONChildrenType.DICTIONARY:
+                     ret = "{";
+                     cnt = 0;
+                    foreach (KeyValuePair<string, Json> pair in childrens)
+                    {
+                        ret += "" + Json.Filter(pair.Key, JSONChildrenType.STRING) + ": " + pair.Value._Encode(depth + 1) + ",";
+                        cnt++;
+                    }
+                    if (cnt > 0)
+                    {
+                        ret = ret.Substring(0, ret.Length - 1);
+                    }
+                    return ret + "}";
+                case JSONChildrenType.NULL:
+                     
+                    return "null";
+                default:
+                    return "" + Json.Filter(single_value, childrenType) + "";
 
             }
-            else if (childrenType == JSONChildrenType.DICTIONARY)
-            {
-                string ret = "{";
-                int cnt = 0;
-                foreach (KeyValuePair<string, Json> pair in childrens)
-                {
-                    ret += "" + Json.Filter(pair.Key,JSONChildrenType.STRING) + ": " + pair.Value._Encode() +",";
-                    cnt++;
-                }
-                if(cnt>0)
-                {
-                    ret = ret.Substring(0, ret.Length - 1);
-                }
-                return ret + "}";
-
-            }
-            else
-                return "" + Json.Filter(single_value, childrenType) + "";
+                
 
         }
         private static string Filter(string a,JSONChildrenType type)
@@ -401,6 +436,7 @@ namespace JSON
                     else
                         ret = "false";
                     break;
+               
             }
             return ret;
                
@@ -430,9 +466,9 @@ namespace JSON
                 switch(json[tmp])
                 {
                     case '{':
-                        return _DecodeDictionary(ref json, 0, out tmp);
+                        return _DecodeDictionary(ref json, 0, out tmp,0);
                     case '[':
-                        return _DecodeArray(ref json, 0, out tmp);
+                        return _DecodeArray(ref json, 0, out tmp,0);
                     case ' ':
                         break;
                     default:
@@ -442,8 +478,10 @@ namespace JSON
             }
             throw new Exception("json解析错误");
         }
-        private static Json _DecodeDictionary(ref string json, int start_pos, out int end_pos)
+        private static Json _DecodeDictionary(ref string json, int start_pos, out int end_pos,int depth)
         {
+            if (depth > max_depth)
+                throw new Exception("递归层次超过阈值");
             end_pos = start_pos+1;
             Json ret = new Json();
             bool flag = false;
@@ -481,7 +519,7 @@ namespace JSON
                 else if (json[end_pos] == '{')
                 {
                     if (!flag) throw new Exception("json解析错误");
-                    ret[key] = _DecodeDictionary(ref json, end_pos, out end_pos);
+                    ret[key] = _DecodeDictionary(ref json, end_pos, out end_pos, depth+1);
                     if (!_DecodeCheckNextCommo(ref json, '}', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
 
                     flag = false;
@@ -489,7 +527,7 @@ namespace JSON
                 else if (json[end_pos] == '[')
                 {
                     if (!flag) throw new Exception("json解析错误");
-                    ret[key] = _DecodeArray(ref json, end_pos, out end_pos);
+                    ret[key] = _DecodeArray(ref json, end_pos, out end_pos, depth + 1);
                     if (!_DecodeCheckNextCommo(ref json, '}', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
 
                     flag = false;
@@ -536,8 +574,10 @@ namespace JSON
             }
             throw new Exception("json解析错误");
         }
-        private static Json _DecodeArray(ref string json, int start_pos, out int end_pos)
+        private static Json _DecodeArray(ref string json, int start_pos, out int end_pos,int depth)
         {
+            if (depth > max_depth)
+                throw new Exception("递归层次超过阈值");
             end_pos = start_pos + 1;
             Json ret = new Json();
             int cnt = 0;
@@ -553,13 +593,13 @@ namespace JSON
                 }
                 else if (json[end_pos] == '{')
                 {
-                    ret[cnt++] = _DecodeDictionary(ref json, end_pos, out end_pos);
+                    ret[cnt++] = _DecodeDictionary(ref json, end_pos, out end_pos, depth + 1);
                     if (!_DecodeCheckNextCommo(ref json, ']', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
 
                 }
                 else if (json[end_pos] == '[')
                 {
-                    ret[cnt++] = _DecodeArray(ref json, end_pos, out end_pos);
+                    ret[cnt++] = _DecodeArray(ref json, end_pos, out end_pos, depth + 1);
                     if (!_DecodeCheckNextCommo(ref json, ']', end_pos + 1, out end_pos)) throw new Exception("json解析错误");
 
                 }

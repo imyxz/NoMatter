@@ -8,15 +8,18 @@ using System.Threading.Tasks;
 namespace ServerLib
 {
     
-    class ModelResult:IList<Dictionary<string,string>>
+    public class ModelResult:IList<Dictionary<string,string>>
     {
         private List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
+        private long insertID;
 
         public Dictionary<string, string> this[int index] { get => ((IList<Dictionary<string, string>>)result)[index]; set => ((IList<Dictionary<string, string>>)result)[index] = value; }
 
         public int Count => ((IList<Dictionary<string, string>>)result).Count;
 
         public bool IsReadOnly => ((IList<Dictionary<string, string>>)result).IsReadOnly;
+
+        public long InsertID { get => insertID; set => insertID = value; }
 
         public void Add(Dictionary<string, string> item)
         {

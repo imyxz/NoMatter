@@ -10,13 +10,16 @@ namespace ServerLib
     /// <summary>
     /// 提供Model层与mysql的接口
     /// </summary>
-    class ModelBasic
+    public class ModelBasic
     {
-        protected MySqlConnection connect;
+        public MySqlConnection connect;
+
         public ModelBasic(MySqlConnection connect)
         {
             this.connect = connect;
         }
+
+
         public ModelResult Query(string query)
         {
             MySqlCommand cmd = new MySqlCommand();
@@ -29,10 +32,13 @@ namespace ServerLib
                 var sub_result = new Dictionary<string, string>();
                 for (int i=0;i<reader.FieldCount;i++)
                 {
-                    sub_result[reader.GetName(i)] = reader.GetString(i);
+                    sub_result[reader.GetName(i)] = reader.GetValue(i).ToString();
                 }
                 result.Add(sub_result);
             }
+            reader.Close();
+
+            result.InsertID = cmd.LastInsertedId;
             return result;
         }
         public ModelResult QueryStmt(string query,params string [] values)
@@ -56,6 +62,9 @@ namespace ServerLib
                 }
                 result.Add(sub_result);
             }
+            reader.Close();
+            result.InsertID = cmd.LastInsertedId;
+
             return result;
         }
     }

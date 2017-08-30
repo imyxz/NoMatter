@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MatterClass
+namespace CommonClass
 {
     public abstract class MatterBasic
     {

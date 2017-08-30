@@ -45,9 +45,16 @@
     <Compile Include="MatterPeriodicity.cs" />
     <Compile Include="MatterType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JSON\JSON.csproj">
+      <Project>{421a401c-a71f-48fc-9a77-e1e98b9a1f0b}</Project>
+      <Name>JSON</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -103,9 +103,9 @@
       <Project>{421a401c-a71f-48fc-9a77-e1e98b9a1f0b}</Project>
       <Name>JSON</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MatterClass\MatterClass.csproj">
+    <ProjectReference Include="..\MatterClass\CommonClass.csproj">
       <Project>{cd31be8b-1402-4488-ae59-4c2c3a631d97}</Project>
-      <Name>MatterClass</Name>
+      <Name>CommonClass</Name>
     </ProjectReference>
     <ProjectReference Include="..\UserClass\UserClass.csproj">
       <Project>{092b8dc9-1084-480b-9659-e4bca42a5e84}</Project>

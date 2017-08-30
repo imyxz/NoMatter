@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatterClass", "MatterClass\MatterClass.csproj", "{CD31BE8B-1402-4488-AE59-4C2C3A631D97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonClass", "MatterClass\CommonClass.csproj", "{CD31BE8B-1402-4488-AE59-4C2C3A631D97}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSON", "JSON\JSON.csproj", "{421A401C-A71F-48FC-9A77-E1E98B9A1F0B}"
 EndProject
@@ -16,6 +16,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserClass", "UserClass\UserClass.csproj", "{092B8DC9-1084-480B-9659-E4BCA42A5E84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerLib", "ServerLib\ServerLib.csproj", "{5359AC05-A874-43D6-8F33-C5420E68245A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CD31BE8B-1402-4488-AE59-4C2C3A631D97} = {CD31BE8B-1402-4488-AE59-4C2C3A631D97}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{ABC5734D-19AD-45E9-97A3-60DE7285CFDB}"
 	ProjectSection(ProjectDependencies) = postProject

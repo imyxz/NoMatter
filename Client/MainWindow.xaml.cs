@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 using HttpRequest;
 using JSON;
 namespace Client
@@ -32,10 +33,10 @@ namespace Client
             HttpQuery query = new HttpQuery();
             Json json = new Json();
             json["username"] = textUserName.Text;
-            json["password"] = textUserName.Text;
-            string response=query.Post("http://127.0.0.0:8080/user/checkLogin", json.Encode());
+            json["password"] = textPassWord.Text;
+            string response=query.Post("http://127.0.0.1:9090/user/checkLogin", json.Encode());
             json = Json.Decode(response);
-            Console.WriteLine(response);
+            Debug.WriteLine(response);
         }
     }
 }
