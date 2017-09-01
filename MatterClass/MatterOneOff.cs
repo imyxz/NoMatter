@@ -2,47 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JSON;
 
 namespace CommonClass
 {
     public class MatterOneOff : MatterBasic
     {
-        public override string GetDesc()
+        public override Object fromJson(Json json)
         {
-            throw new NotImplementedException();
-        }
-
-        public override DateTime GetEndTime()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int GetID()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string GetName()
-        {
-            throw new NotImplementedException();
+            return json.ConvertTo<MatterOneOff>((string c, string m) =>
+            {
+                /*switch (m)
+                {
+                    case "PassWord":
+                        return false;
+                }*/
+                return true;
+            });
         }
 
         public override DateTime GetNextEffectTime()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override DateTime GetStartTime()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override MatterType GetType()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int GetUserID()
         {
             throw new NotImplementedException();
         }

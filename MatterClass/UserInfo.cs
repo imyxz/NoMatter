@@ -7,19 +7,24 @@ namespace CommonClass
 {
     public class UserInfo:IJsonAble
     {
-        private int userID;
-        private string userName;
-        private string passWord;
-        private string nickName;
+        public int UserID;
+        public string UserName;
+        public string PassWord;
+        public string NickName;
+        public UserInfo() { }
 
-        public int UserID { get => userID; set => userID = value; }
-        public string UserName { get => userName; set => userName = value; }
-        public string PassWord { get => passWord; set => passWord = value; }
-        public string NickName { get => nickName; set => nickName = value; }
 
-        public void fromJson(Json json)
+        public Object fromJson(Json json)
         {
-            throw new NotImplementedException();
+            return json.ConvertTo<UserInfo>((string c, string m) =>
+            {
+                switch (m)
+                {
+                    case "PassWord":
+                        return false;
+                }
+                return true;
+            });
         }
 
         public Json toJson()

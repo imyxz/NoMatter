@@ -13,7 +13,7 @@ namespace ServerLib
     {
         protected MySqlConnection Connection;
         private static string connnect_flag = @"server=localhost;userid=root;
-            password=;database=nomatter;convert zero datetime=True;Convert Zero Datetime=True;";
+            password=;database=nomatter;convert zero datetime=True;Convert Zero Datetime=True;Charset=utf8;";
         public ControllerBasic()
         {
             
@@ -32,7 +32,13 @@ namespace ServerLib
 
         public abstract Dictionary<string, Func<HttpServerContext, string>> GetActions();
 
-        public abstract IController InitController();
+        public IController InitController(Type Controller)
+        {
+            
+            var tmp = (ControllerBasic)Activator.CreateInstance(Controller);
+            tmp.ConnectDB();
+            return tmp;
+        } 
 
         public void EndController()
         {

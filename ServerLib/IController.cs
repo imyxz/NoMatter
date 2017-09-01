@@ -9,7 +9,7 @@ namespace ServerLib
     public interface IController
     {
         Dictionary<string, Func<HttpServerContext, string>> GetActions();
-        IController InitController();
+        IController InitController(Type Controller);
         void EndController();
         
         MySqlConnection GetDBConnection();

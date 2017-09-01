@@ -8,19 +8,20 @@
         Title="用户登录" Height="187.748" Width="350">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="191*"/>
+            <ColumnDefinition Width="144*"/>
+            <ColumnDefinition Width="47*"/>
             <ColumnDefinition Width="151*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox x:Name="groupBox" Header="登录信息" HorizontalAlignment="Left" Height="147" Margin="10,0,0,0" VerticalAlignment="Top" Width="322" Grid.ColumnSpan="2">
+        <GroupBox x:Name="groupBox" Header="登录信息" HorizontalAlignment="Left" Height="147" Margin="10,0,0,0" VerticalAlignment="Top" Width="322" Grid.ColumnSpan="3">
             <Grid HorizontalAlignment="Left" Height="127" Margin="8,-6,0,0" VerticalAlignment="Top" Width="298">
                 <Label x:Name="label" Content="用户名：" HorizontalAlignment="Left" Height="24" Margin="10,20,0,0" VerticalAlignment="Top" Width="69"/>
                 <Label x:Name="label_Copy" Content="密码：" HorizontalAlignment="Left" Height="24" Margin="10,49,0,0" VerticalAlignment="Top" Width="69"/>
-                <TextBox x:Name="textUserName" HorizontalAlignment="Left" Height="21" Margin="74,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333">
+                <TextBox x:Name="textUserName" HorizontalAlignment="Left" Height="21" Margin="74,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333" Text="test">
                     <TextBox.BindingGroup>
                         <BindingGroup NotifyOnValidationError="True"/>
                     </TextBox.BindingGroup>
                 </TextBox>
-                <TextBox x:Name="textPassWord" HorizontalAlignment="Left" Height="21" Margin="74,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333"/>
+                <TextBox x:Name="textPassWord" HorizontalAlignment="Left" Height="21" Margin="74,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333" Text="test1234"/>
                 <Button x:Name="buttonLogin" Content="登录" HorizontalAlignment="Left" Height="22" Margin="157,82,0,0" VerticalAlignment="Top" Width="41" Click="button_Click"/>
             </Grid>
         </GroupBox>

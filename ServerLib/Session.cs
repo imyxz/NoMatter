@@ -27,7 +27,7 @@ namespace ServerLib
             if(FindCookie(out sessionID,out sessionPass))
             {
                 var session_info = GetSessionInfo(sessionID);
-                if(session_info==null || session_info["session_pass"]==null )
+                if(session_info!=null && session_info["session_pass"]!="" )
                 {
                     if(session_info["session_pass"] == sessionPass)
                     {
@@ -36,9 +36,9 @@ namespace ServerLib
                     }
 
                 }
-                var cookie = new System.Net.Cookie(session_prefix+sessionID.ToString(),"");
+                var cookie = new System.Net.Cookie(session_prefix+sessionID.ToString(),"empty","/");
                 cookie.Expired = true;
-                context.Context.Response.SetCookie(cookie);
+                AddCookie(cookie);
             }
             NewSession();
 
@@ -99,8 +99,13 @@ namespace ServerLib
                 "where session_id=@2", data.Encode() ?? "", sessionTime.ToString(), sessionID.ToString());
             var cookie = new System.Net.Cookie(session_prefix+sessionID.ToString(),sessionPass);
             cookie.Expires = DateTime.Now.AddMinutes(sessionTime);
-
-            context.Context.Response.SetCookie(cookie);
+            cookie.Path = "/";
+            AddCookie(cookie);
+        }
+        private void AddCookie(System.Net.Cookie cookie)
+        {
+            var max_age=cookie.Expires.Subtract(DateTime.Now).Duration().TotalSeconds;
+            context.Context.Response.AppendHeader("Set-Cookie", cookie.Name + "=" + cookie.Value + "; Max-Age=" + max_age + "; Path=" + cookie.Path);
         }
 
     }

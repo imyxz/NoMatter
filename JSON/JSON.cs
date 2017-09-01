@@ -205,7 +205,12 @@ namespace JSON
             return ret;
         }
         #endregion
-#region Json Convertor
+        #region Json Convertor
+        public override string ToString()
+        {
+            return this.Encode();
+        }
+        
         public int ? ToInt()
         {
             int ret = 0;
@@ -274,7 +279,7 @@ namespace JSON
                     {
                         if (member.MemberType == MemberTypes.Field)//public 属性
                         {
-                            object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
+                            object value = obj_type.InvokeMember(member.Name, 
                 BindingFlags.Public | BindingFlags.NonPublic |
                 BindingFlags.Instance | BindingFlags.GetField
                 , null, obj, null);//获取属性值
@@ -288,7 +293,7 @@ namespace JSON
                                 //null
                             }
                         }
-                        else if (member.MemberType == MemberTypes.Property)
+                        /*else if (member.MemberType == MemberTypes.Property)
                         {
                             object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
                 BindingFlags.Public | BindingFlags.NonPublic |
@@ -304,7 +309,7 @@ namespace JSON
                                 //null
                                 ret[member.Name] = new Json();
                             }
-                        }
+                        }*/
                     }
                     
                 }
@@ -361,14 +366,105 @@ namespace JSON
         {
             return a.ToBool();
         }
-        public T ConvertTo<T>() where T : IJsonAble, new()
+        public T ConvertTo<T>() where T : new()
         {
-            T ret = new T();
-            ret.fromJson(this);
-            return ret;
+            return ConvertTo<T>(null);
+        }
+        public T ConvertTo<T>(Func<string, string, bool> Filter) where T : new()
+        {
+            return (T)ConvertTo(typeof(T), this, 0, Filter);
+        }
+
+        private static Object ConvertTo(Type type,Json json, int depth, Func<string,string, bool> Filter)
+        {
+            
+            if (depth > max_depth)
+                throw new Exception("递归层次超过阈值");
+            
+            Object obj = null;
+            try {
+                //obj = type.GetConstructor(Type.EmptyTypes).Invoke(null);//对结构体无效
+                if(typeof(string)==type)//string 类型无默认的构造函数
+                    obj = "";
+                else
+                    obj = Activator.CreateInstance(type);//可对对象与结构体操作
+            } catch { }
+            if (obj == null) throw new Exception("对象无默认公共构造函数");
+            if (json.IsNull())
+                return obj;
+            if (json.IsReadAble())//为单个值类型
+            {
+                if(type==typeof(string))//string类型无tryparse方法
+                {
+                    obj = string.Copy((string)json);
+                    return obj;
+                }else 
+                if (type.BaseType == typeof(Enum))//enum类型要特殊处理
+                {
+                    obj = Enum.Parse(type, (string)json);
+                    return obj;
+                }
+                else
+                {
+                    var tryparse = type.GetMethod("TryParse", BindingFlags.Public | BindingFlags.Static, Type.DefaultBinder,
+                                    new Type[] { typeof(string), type.MakeByRefType() },
+                                    new ParameterModifier[] { new ParameterModifier(2) });
+
+                    var parameters = new object[] { (string)json, Activator.CreateInstance(type) };
+                    if (tryparse == null)
+                        throw new Exception("值类型" + type.FullName + "无tryparse函数");
+                    bool success = (bool)(tryparse.Invoke(null, parameters) ?? false);
+                    if (success)
+                    {
+                        obj = parameters[1];
+                        return obj;
+                    }
+                    else
+                        throw new Exception("有tryparse的情况下无法转换");
+                }
+            }
+
+
+            if (Filter == null && obj is IJsonAble ijsonable)
+            {
+                obj=ijsonable.fromJson(json);
+                return obj;
+            }
+            else
+            {
+                Json ret = new Json();
+                Type obj_type = type;
+                foreach (MemberInfo member in obj_type.GetMembers(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    if ((Filter != null && json.ContainsKey(member.Name) && Filter(obj_type.Name, member.Name)))//过滤函数
+                    {
+                        if (member.MemberType == MemberTypes.Field)//public 属性
+                        {
+                            object[] value = new object[1];
+                            value[0] = ConvertTo(((FieldInfo)member).FieldType, json[member.Name], depth + 1, Filter);
+                            obj_type.InvokeMember(member.Name, 
+                BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance | BindingFlags.SetField
+                , null, obj, value);//设置属性
+                        }
+                        /*else if (member.MemberType == MemberTypes.Property)
+                        {
+                            object[] value = new object[1];
+                            value[0] = ConvertTo(((PropertyInfo)member).PropertyType, json[member.Name], depth + 1, Filter);
+                            obj_type.InvokeMember(member.Name, 
+                BindingFlags.Public | BindingFlags.NonPublic |
+                BindingFlags.Instance | BindingFlags.SetProperty
+                , null, obj, value);//设置属性
+                        }*/
+                    }
+
+                }
+                return obj;
+
+            }
         }
         #endregion
-#region Json Encoder
+            #region Json Encoder
         public string Encode()
         {
             if (childrenType == JSONChildrenType.STRING)
@@ -429,6 +525,8 @@ namespace JSON
                     ret = ret.Replace("\\", "\\\\");
                     ret = ret.Replace("\"", "\\\"");
                     ret = "\"" + ret + "\"";
+                    ret = Json.EncodeNonAsciiCharacters(ret);
+
                     break;
                 case JSONChildrenType.BOOLEAN:
                     if (Convert.ToBoolean(ret) == true)
@@ -472,7 +570,7 @@ namespace JSON
                     case ' ':
                         break;
                     default:
-                        throw new Exception("json解析错误");
+                        return new Json();
                 }
                 tmp++;
             }
@@ -807,7 +905,16 @@ namespace JSON
             }
 
         }
-#region Implement for IDictionary
+        public bool IsNull()
+        {
+            return childrenType == JSONChildrenType.NULL;
+        }
+        public static bool TryParse(string a,out Json ret)
+        {
+            ret = Json.Decode(a)??new Json();
+            return true;
+        }
+        #region Implement for IDictionary
         public bool ContainsKey(string key)
         {
             return ((IDictionary<string, Json>)childrens).ContainsKey(key);
@@ -862,7 +969,24 @@ namespace JSON
         {
             return ((IDictionary<string, Json>)childrens).GetEnumerator();
         }
-
+        private static string EncodeNonAsciiCharacters(string value)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in value)
+            {
+                if (c > 127)
+                {
+                    // This character is too big for ASCII
+                    string encodedValue = "\\u" + ((int)c).ToString("x4");
+                    sb.Append(encodedValue);
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
     }
 #endregion
 

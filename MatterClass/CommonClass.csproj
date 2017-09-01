@@ -7,8 +7,8 @@
     <ProjectGuid>{CD31BE8B-1402-4488-AE59-4C2C3A631D97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MatterClass</RootNamespace>
-    <AssemblyName>MatterClass</AssemblyName>
+    <RootNamespace>CommonClass</RootNamespace>
+    <AssemblyName>CommonClass</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IFromDB.cs" />
     <Compile Include="MatterBasic.cs" />
+    <Compile Include="MatterFolder.cs" />
     <Compile Include="MatterOneOff.cs" />
     <Compile Include="MatterPeriodicity.cs" />
     <Compile Include="MatterType.cs" />

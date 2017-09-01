@@ -8,7 +8,7 @@ namespace JSON
     public interface IJsonAble
     {
         Json toJson();
-        void fromJson(Json json);
+        Object fromJson(Json json);
        
     }
 }

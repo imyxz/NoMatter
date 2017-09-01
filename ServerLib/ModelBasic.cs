@@ -20,7 +20,7 @@ namespace ServerLib
         }
 
 
-        public ModelResult Query(string query)
+        protected ModelResult Query(string query)
         {
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = connect;
@@ -41,7 +41,7 @@ namespace ServerLib
             result.InsertID = cmd.LastInsertedId;
             return result;
         }
-        public ModelResult QueryStmt(string query,params string [] values)
+        protected ModelResult QueryStmt(string query,params string [] values)
         {
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = connect;

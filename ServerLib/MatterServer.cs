@@ -12,6 +12,7 @@ namespace ServerLib
         static MatterServer()
         {
             Controllers["user"]=new UserController();
+            Controllers["matter"] = new MatterController();
         }
         public void Start(params string [] prefixes)
         {

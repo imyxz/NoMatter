@@ -3,31 +3,29 @@
   <Class Name="CommonClass.MatterBasic" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAIAAAAAgCABAAAAAgAAAAACAAAEAAAAAAAAABAA=</HashCode>
+      <HashCode>AAAgAIhggAABCABAIAAAgCEAAAChAAAAEAAgAAAQBAA=</HashCode>
       <FileName>MatterBasic.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="MatterType" />
-    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="CommonClass.MatterOneOff" Collapsed="true">
     <Position X="3" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAIAAAAAACABAAAAAgAAAAACAAAEAAAAAAAAABAA=</HashCode>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MatterOneOff.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CommonClass.MatterPeriodicity" Collapsed="true">
     <Position X="4.75" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAgAIAAAAAACABAAAAAgAAAAACAAAEAAAAAAAAABAA=</HashCode>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MatterPeriodicity.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CommonClass.UserInfo">
     <Position X="5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAIBAAAACAAAAAgAAQAgAAEAAQAAAAEAAAA=</HashCode>
+      <HashCode>AAAAAgAAAAABAAAAAAAAAAgAAAAgAAEAAQAAAAAAAAA=</HashCode>
       <FileName>UserInfo.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

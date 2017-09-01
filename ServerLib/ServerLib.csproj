@@ -47,6 +47,8 @@
     <Compile Include="HttpServerContext.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="IController.cs" />
+    <Compile Include="MatterController.cs" />
+    <Compile Include="MatterModel.cs" />
     <Compile Include="MatterServer.cs" />
     <Compile Include="ModelBasic.cs" />
     <Compile Include="ModelResult.cs" />

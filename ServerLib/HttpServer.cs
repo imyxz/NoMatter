@@ -55,7 +55,7 @@ namespace ServerLib
                 string action = query[2];
 
                 if (!Controllers.ContainsKey(controller_name)) throw new Exception("No such controller");
-                Controller = Controllers[controller_name].InitController();//初始化控制器
+                Controller = Controllers[controller_name].InitController(Controllers[controller_name].GetType());//初始化控制器
                 context.DBConnection = Controller.GetDBConnection();
                 var Handlers = Controller.GetActions();//获取控制器方法
                 if (!Handlers.ContainsKey(action)) throw new Exception("No such action");
