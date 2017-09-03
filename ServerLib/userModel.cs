@@ -24,6 +24,9 @@ namespace ServerLib
                 user_info.UserName = info["user_name"];
                 user_info.NickName = info["user_nickname"];
                 user_info.PassWord = info["user_password"];
+                user_info.user_email = info["user_email"];
+                user_info.user_phone = info["user_phone"];
+
                 return user_info;
 
             }
@@ -43,6 +46,8 @@ namespace ServerLib
                 user_info.UserName = info["user_name"];
                 user_info.NickName = info["user_nickname"];
                 user_info.PassWord = info["user_password"];
+                user_info.user_email = info["user_email"];
+                user_info.user_phone = info["user_phone"];
                 return user_info;
 
             }
@@ -62,6 +67,8 @@ namespace ServerLib
                 user_info.UserName = info["user_name"];
                 user_info.NickName = info["user_nickname"];
                 user_info.PassWord = info["user_password"];
+                user_info.user_email = info["user_email"];
+                user_info.user_phone = info["user_phone"];
                 return user_info;
 
             }
@@ -70,15 +77,11 @@ namespace ServerLib
                 return null;
             }
         }
-        public UserInfo NewUser(string username,string password,string user_nickname,string ip)
+        public int NewUser(string username,string password,string user_nickname,string user_email,string user_phone)
         {
-            var ret= new UserInfo();
-            ret.UserName = username;
-            ret.PassWord = password;
-            ret.NickName = user_nickname;
-            var result = QueryStmt(@"insert into user_info set user_name=@0,user_email="",user_avatar="",user_nickname=@1,user_password=@2,reg_ip=@3,login_ip=@3", ret.UserName,ret.NickName,ret.PassWord,ip);
-            ret.UserID = (int)result.InsertID;
-            return ret;
+            var result = QueryStmt(@"insert into user_info set user_name=@0 , user_avatar='',user_nickname= @1 ,user_password=@2,reg_ip='',login_ip='' , user_email=@3 , user_phone=@4 ", 
+                username,user_nickname,password,user_email,user_phone);
+            return (int)result.InsertID;
 
         }
         public void ChangePassword(int user_id,string password)

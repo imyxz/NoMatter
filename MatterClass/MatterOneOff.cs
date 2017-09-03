@@ -8,15 +8,19 @@ namespace CommonClass
 {
     public class MatterOneOff : MatterBasic
     {
+        public MatterOneOff():base()
+        {
+            matter_type = MatterType.oneOffEvent;
+        }
         public override Object fromJson(Json json)
         {
             return json.ConvertTo<MatterOneOff>((string c, string m) =>
             {
-                /*switch (m)
+                switch (m)
                 {
-                    case "PassWord":
+                    case "is_new":
                         return false;
-                }*/
+                }
                 return true;
             });
         }
@@ -24,6 +28,18 @@ namespace CommonClass
         public override DateTime GetNextEffectTime()
         {
             throw new NotImplementedException();
+        }
+        public static MatterOneOff converToMe(MatterBasic matter)
+        {
+            var ret = new MatterOneOff();
+            MatterBasic.CopyTo(matter, ret);
+            ret.matter_addion_info = new Json();
+            ret.matter_type = MatterType.oneOffEvent;
+            return ret;
+        }
+        public override bool OnUserFinish()
+        {
+            return true;
         }
     }
 }

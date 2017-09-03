@@ -1,0 +1,19 @@
+服务端环境要求：
+1、.net framework>=4.0
+2、mysql数据库
+
+部署步骤：
+1.导入nomatter.sql到数据库
+2.更改数据库链接信息，于ServerLib/ControllerBasic.cs文件内的connnect_flag
+3.更改Server/program.cs内的server.start("")，此为服务器监听字符串，若监听非127.0.0.1，需要以管理员身份运行服务端
+
+用到的外部类：
+1.mysql---->数据库访问类
+2.TopSdk----->阿里大鱼sdk，用于发送短信
+3.openpop---->pop3请求类
+
+客户端环境要求
+.net framework>=4.0
+
+部署步骤：
+更改Client/clientconfig.cs文件内的serverUrl，为服务器的地址

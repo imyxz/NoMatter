@@ -31,7 +31,7 @@ namespace ServerLib
                 var request_json = Json.Decode(context.Request) ?? throw new InvalidArguments("Json decode Faild");
                 var user_name = request_json["username"] ?? throw new InvalidArguments("Json decode Faild");
                 var pass_word = request_json["password"] ?? throw new InvalidArguments("Json decode Faild");
-                var user_info = usermodel.CheckLogin(user_name, pass_word) ?? throw new InvalidRequest(1, "错误的账号名或密码");
+                var user_info = usermodel.CheckLogin(user_name, GetMD5( pass_word)) ?? throw new InvalidRequest(1, "错误的账号名或密码");
                 var tmp = new Json();
                 tmp["user_info"] = Json.ConvertFrom(user_info);
                 context.session.Data["user_id"] = user_info.UserID;
@@ -54,13 +54,15 @@ namespace ServerLib
                 var user_name = request_json["username"] ?? throw new InvalidArguments("Json decode Faild");
                 var pass_word = request_json["password"] ?? throw new InvalidArguments("Json decode Faild");
                 var nickname = request_json["nickname"] ?? throw new InvalidArguments("Json decode Faild");
+                var email = request_json["email"] ?? throw new InvalidArguments("Json decode Faild");
+                var phone = request_json["phone"] ?? throw new InvalidArguments("Json decode Faild");
 
                 var user_info = usermodel.GetUserInfoByUserName(user_name);
                 if(user_info!=null) throw new InvalidRequest(1,"该用户名已注册");
-                user_info = usermodel.NewUser(user_name, GetMD5(pass_word),nickname,"0.0.0.0");
-                if(user_info==null || user_info.UserID<=0) throw new InvalidRequest(1, "注册失败！");
+                var user_id=usermodel.NewUser(user_name,GetMD5(pass_word),nickname,email,phone);
+                if(user_id <= 0) throw new InvalidRequest(1, "注册失败！");
                 var tmp = new Json();
-                tmp["user_id"] = user_info.UserID;
+                tmp["user_id"] = user_id;
                 context.Write(GenerateResponse(tmp).Encode());
 
             }

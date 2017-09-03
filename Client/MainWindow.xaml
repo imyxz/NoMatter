@@ -16,13 +16,14 @@
             <Grid HorizontalAlignment="Left" Height="127" Margin="8,-6,0,0" VerticalAlignment="Top" Width="298">
                 <Label x:Name="label" Content="用户名：" HorizontalAlignment="Left" Height="24" Margin="10,20,0,0" VerticalAlignment="Top" Width="69"/>
                 <Label x:Name="label_Copy" Content="密码：" HorizontalAlignment="Left" Height="24" Margin="10,49,0,0" VerticalAlignment="Top" Width="69"/>
-                <TextBox x:Name="textUserName" HorizontalAlignment="Left" Height="21" Margin="74,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333" Text="test">
+                <TextBox x:Name="textUserName" HorizontalAlignment="Left" Height="21" Margin="74,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333">
                     <TextBox.BindingGroup>
                         <BindingGroup NotifyOnValidationError="True"/>
                     </TextBox.BindingGroup>
                 </TextBox>
-                <TextBox x:Name="textPassWord" HorizontalAlignment="Left" Height="21" Margin="74,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333" Text="test1234"/>
+                <PasswordBox x:Name="textPassWord" HorizontalAlignment="Left" Height="21" Margin="74,52,0,0"  VerticalAlignment="Top" Width="124" RenderTransformOrigin="-0.257,0.333"/>
                 <Button x:Name="buttonLogin" Content="登录" HorizontalAlignment="Left" Height="22" Margin="157,82,0,0" VerticalAlignment="Top" Width="41" Click="button_Click"/>
+                <Button x:Name="button_registe" Content="注册" HorizontalAlignment="Left" Height="22" Margin="102,82,0,0" VerticalAlignment="Top" Width="42" Click="button_registe_Click"/>
             </Grid>
         </GroupBox>
     </Grid>

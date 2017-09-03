@@ -1,40 +1,86 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="CommonClass.MatterBasic" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="1.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAIhggAABCABAIAAAgCEAAAChAAAAEAAgAAAQBAA=</HashCode>
+      <HashCode>QCAwAIhggAAJSADAIQAAgCEUAACgAgAAMJAgCBAQZIA=</HashCode>
       <FileName>MatterBasic.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="CommonClass.MatterOneOff" Collapsed="true">
-    <Position X="3" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>QAAAAAAAAAABCAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
       <FileName>MatterOneOff.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CommonClass.MatterPeriodicity" Collapsed="true">
-    <Position X="4.75" Y="0.5" Width="1.75" />
+  <Class Name="CommonClass.UserInfo" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>MatterPeriodicity.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="CommonClass.UserInfo">
-    <Position X="5" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAgAAAAABAAAAAAAAAAgAAAAgAAEAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAgAAAAABAAAAAAAIAAgAAAAgCAEAAQAAAAAAAAA=</HashCode>
       <FileName>UserInfo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CommonClass.MatterFolder" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAIiAAADAgAAAAIAAAAEAAAhBAAIAAQAAAAAAAA=</HashCode>
+      <FileName>MatterFolder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CommonClass.Mailbox" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAQgAgABABIAQAAAAAAAAAAwACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mailbox.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Enum Name="CommonClass.MatterType">
-    <Position X="0.5" Y="2.25" Width="1.5" />
+  <Class Name="CommonClass.MatterEmail" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAA=</HashCode>
+      <HashCode>QAAAIAAAAAABCAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MatterEmail.cs</FileName>
+      <NewMemberFileName>MatterPeriodicity.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommonClass.MatterPeriodicity" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAgAABCAAAAAAAAAAAAAAgAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>MatterPeriodicity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommonClass.Message" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIBEAAgCAABAAAAAAAAAAAAAAAgAAMAAAAAAgAAAAA=</HashCode>
+      <FileName>Message.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="CommonClass.IFromDB" Collapsed="true">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IFromDB.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="CommonClass.MatterType" Collapsed="true">
+    <Position X="5.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAkAAAAAAAAAA=</HashCode>
       <FileName>MatterType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CommonClass.MatterPeriodicityType">
+    <Position X="1.25" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAgAAAAAAAgAAAAAAgA=</HashCode>
+      <FileName>MatterPeriodicityType.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Microsoft YaHei UI" Size="9" />

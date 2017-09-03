@@ -13,6 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -70,6 +70,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="RegisteWindow.xaml.cs">
+      <DependentUpon>RegisteWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="AddFolder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MailboxManage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -78,6 +89,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AddFolder.xaml.cs">
+      <DependentUpon>AddFolder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -92,6 +106,9 @@
     <Compile Include="ClientSession.cs" />
     <Compile Include="Folders.cs" />
     <Compile Include="LoginData.cs" />
+    <Compile Include="MailboxManage.xaml.cs">
+      <DependentUpon>MailboxManage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -100,6 +117,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RegisteWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Matters.cs" />
@@ -124,6 +145,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -144,10 +166,6 @@
     <ProjectReference Include="..\MatterClass\CommonClass.csproj">
       <Project>{cd31be8b-1402-4488-ae59-4c2c3a631d97}</Project>
       <Name>CommonClass</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UserClass\UserClass.csproj">
-      <Project>{092b8dc9-1084-480b-9659-e4bca42a5e84}</Project>
-      <Name>UserClass</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +219,26 @@
     <Resource Include="Resources\right_black.png" />
     <Resource Include="Resources\right_blue.png" />
     <Resource Include="Resources\right_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\list_black.png" />
+    <Resource Include="Resources\list_blue.png" />
+    <Resource Include="Resources\list_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\refresh_black.png" />
+    <Resource Include="Resources\refresh_blue.png" />
+    <Resource Include="Resources\refresh_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\setting_black.png" />
+    <Resource Include="Resources\setting_blue.png" />
+    <Resource Include="Resources\setting_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\mail_black.png" />
+    <Resource Include="Resources\mail_blue.png" />
+    <Resource Include="Resources\mail_red.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -11,6 +11,8 @@ namespace ServerLib
     {
         private readonly HttpListener listener = new HttpListener();
         private Dictionary<string, IController> Controllers = new Dictionary<string, IController>();
+        private List<Func<bool>> Tickers = new List<Func<bool>>();
+        private readonly static int TickTime=60;
         public HttpServer(params string [] prefixes)
         {
             foreach (string prefix in prefixes)
@@ -22,10 +24,15 @@ namespace ServerLib
         {
             listener.Start();
             ThreadPool.QueueUserWorkItem(Runner, null);
+            ThreadPool.QueueUserWorkItem(Ticker, null);
         }
         public void Registe(string ControllerName,IController Controller)
         {
             Controllers[ControllerName] = Controller;
+        }
+        public void AddTicker(Func<bool> function)
+        {
+            Tickers.Add(function);
         }
         private void Runner(object state)
         {
@@ -40,6 +47,23 @@ namespace ServerLib
 
 
             }
+        }
+        private void Ticker(object state)
+        {
+            while (listener.IsListening)
+            {
+                DateTime start = DateTime.Now;
+                foreach (var func in Tickers)
+                {
+                    try { func(); } catch { }
+                }
+                var tmp = DateTime.Now.Subtract(start);
+                Log("执行定时任务，用时 " + tmp.TotalSeconds.ToString() + "秒");
+                for (int i = 0; i < TickTime; i++)
+                    Thread.Sleep(1000);
+            }
+                
+            
         }
         protected void Handler(object state)
         {
@@ -71,10 +95,12 @@ namespace ServerLib
                 }
                 Log(ListenerContext.Request.UserHostAddress + "连入 " + controller_name + " " + action);
                 Log(context.Request);
-                context.session = new Session(context);
+                if(context.Controller!="ticker")
+                    context.session = new Session(context);
                 context.session.StartSession();//session调用
                 context.Handler(context);//调用方法
-                context.session.SaveSession();//保存session调用信息
+                if (context.Controller != "ticker")
+                    context.session.SaveSession();//保存session调用信息
                 Log(context.Response);
 
                 string responseStr = context.Response;

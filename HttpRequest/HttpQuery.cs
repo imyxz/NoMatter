@@ -9,7 +9,7 @@ namespace HttpRequest
 {
     public class HttpQuery
     {
-        private double timeout = 5;
+        public double timeout = 5;
         private CookieCollection requestCookies = new CookieCollection();
         private CookieCollection responseCookies = new CookieCollection();
 
@@ -51,9 +51,17 @@ namespace HttpRequest
         }
         private string GetResponseString( HttpWebResponse response)
         {
-            byte[] bytes = new byte[response.ContentLength];
-            response.GetResponseStream().Read(bytes, 0, (int)response.ContentLength);
-            return Encoding.UTF8.GetString(bytes);
+            StreamReader readStream = new StreamReader(response.GetResponseStream(), System.Text.Encoding.GetEncoding("utf-8"));
+            Char[] read = new Char[256];
+            string str = "";
+            int count = 0;
+            do
+            {
+                count = readStream.Read(read, 0, 256);
+                string tmp = new string(read, 0, count);
+                str += tmp;
+            } while (count > 0);
+            return str;
         }
     }
 }

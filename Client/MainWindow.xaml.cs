@@ -26,7 +26,6 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
-            button_Click(null, null);
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -35,7 +34,7 @@ namespace Client
             //query.RequestCookies.Add(ClientSession.SessionCookie);
             Json json = new Json();
             json["username"] = textUserName.Text;
-            json["password"] = textPassWord.Text;
+            json["password"] = textPassWord.Password;
             try
             {
                 var response =Json.Decode(query.Post(ClientConfig.ServerUrl+ "user/checkLogin", json.Encode()));
@@ -59,6 +58,11 @@ namespace Client
                 MessageBox.Show( "登录失败！");
             }
             
+        }
+
+        private void button_registe_Click(object sender, RoutedEventArgs e)
+        {
+            (new RegisteWindow()).Show();
         }
     }
 }

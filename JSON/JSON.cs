@@ -275,7 +275,7 @@ namespace JSON
                 Type obj_type = type;
                 foreach (MemberInfo member in obj_type.GetMembers(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if((Filter != null && Filter(obj_type.Name, member.Name)))//过滤函数
+                    if((Filter == null || Filter(obj_type.Name, member.Name)))//过滤函数
                     {
                         if (member.MemberType == MemberTypes.Field)//public 属性
                         {
@@ -293,7 +293,7 @@ namespace JSON
                                 //null
                             }
                         }
-                        /*else if (member.MemberType == MemberTypes.Property)
+                         if (member.MemberType == MemberTypes.Property && type.Namespace == null)//处理匿名类
                         {
                             object value = obj_type.InvokeMember(member.Name, BindingFlags.DeclaredOnly |
                 BindingFlags.Public | BindingFlags.NonPublic |
@@ -309,7 +309,7 @@ namespace JSON
                                 //null
                                 ret[member.Name] = new Json();
                             }
-                        }*/
+                        }
                     }
                     
                 }
@@ -436,7 +436,7 @@ namespace JSON
                 Type obj_type = type;
                 foreach (MemberInfo member in obj_type.GetMembers(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if ((Filter != null && json.ContainsKey(member.Name) && Filter(obj_type.Name, member.Name)))//过滤函数
+                    if (json.ContainsKey(member.Name)&& (Filter == null || Filter(obj_type.Name, member.Name)))//过滤函数
                     {
                         if (member.MemberType == MemberTypes.Field)//public 属性
                         {
@@ -524,6 +524,9 @@ namespace JSON
                 case JSONChildrenType.STRING:
                     ret = ret.Replace("\\", "\\\\");
                     ret = ret.Replace("\"", "\\\"");
+                    ret = ret.Replace("\n", "\\\n");
+                    ret = ret.Replace("\r", " ");
+                    ret = ret.Replace("\t", " ");
                     ret = "\"" + ret + "\"";
                     ret = Json.EncodeNonAsciiCharacters(ret);
 
@@ -584,14 +587,15 @@ namespace JSON
             Json ret = new Json();
             bool flag = false;
             string key = "";
-            while (end_pos < json.Length)
+            while (end_pos < json.Length && json[end_pos]!='\0')
             {
                 if (json[end_pos] == '"')
                 {
                     if (flag == false)
                     {
                         key = "";
-                        if (!_DecodeGetString(ref json, end_pos, out end_pos, out key)) throw new Exception("json解析错误");
+                        if (!_DecodeGetString(ref json, end_pos, out end_pos, out key))
+                            throw new Exception("json解析错误");
                         end_pos++;
 
                         while (end_pos < json.Length)

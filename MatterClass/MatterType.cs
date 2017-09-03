@@ -8,6 +8,7 @@ namespace CommonClass
     public enum MatterType
     {
         oneOffEvent,
-        periodicEvent
+        periodicEvent,
+        email
     }
 }

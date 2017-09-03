@@ -11,6 +11,8 @@ namespace CommonClass
         public string UserName;
         public string PassWord;
         public string NickName;
+        public string user_email = "";
+        public string user_phone = "";
         public UserInfo() { }
 
 

@@ -41,11 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IFromDB.cs" />
+    <Compile Include="Mailbox.cs" />
     <Compile Include="MatterBasic.cs" />
+    <Compile Include="MatterEmail.cs" />
     <Compile Include="MatterFolder.cs" />
     <Compile Include="MatterOneOff.cs" />
     <Compile Include="MatterPeriodicity.cs" />
+    <Compile Include="MatterPeriodicityType.cs" />
     <Compile Include="MatterType.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserInfo.cs" />
   </ItemGroup>
